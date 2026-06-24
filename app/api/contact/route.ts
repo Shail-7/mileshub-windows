@@ -125,7 +125,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     await transporter.sendMail({
-      from: `"Mileshub Windows Website" <${CONTACT_FROM || SMTP_USER}>`,
+      from: `"Mileshub Windows" <${CONTACT_FROM || SMTP_USER}>`,
       to: CONTACT_TO || DEFAULT_TO,
       replyTo: `"${lead.name}" <${lead.email}>`,
       subject: `New quote request — ${lead.service} (${lead.name})`,
