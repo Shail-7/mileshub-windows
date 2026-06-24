@@ -9,6 +9,32 @@ export const dynamic = "force-dynamic";
 
 const DEFAULT_TO = "Sales@Mhwindows.co.uk";
 
+// Best-effort in-memory rate limit. On serverless this is per-instance, so it
+// throttles bursts from a single warm instance rather than enforcing a global
+// limit — a lightweight first line of defence, not a hard guarantee.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60_000;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function clientIp(request: Request): string {
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]!.trim();
+  return request.headers.get("x-nf-client-connection-ip") || "unknown";
+}
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  if (hits.size > 5000) hits.clear(); // crude guard against unbounded growth
+  const entry = hits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    hits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT;
+}
+
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -57,6 +83,19 @@ export async function POST(request: Request): Promise<NextResponse> {
     payload = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid request body." }, { status: 400 });
+  }
+
+  // Honeypot: real users never fill the hidden "company" field. Pretend success
+  // and silently drop so bots get no signal.
+  if (typeof payload.company === "string" && payload.company.trim() !== "") {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (rateLimited(clientIp(request))) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests — please try again in a minute." },
+      { status: 429 },
+    );
   }
 
   const lead = normalizeLead(payload);

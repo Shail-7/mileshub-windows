@@ -12,6 +12,7 @@ interface ContactResponse {
 
 export default function ContactForm() {
   const [form, setForm] = useState<Lead>(EMPTY_LEAD);
+  const [company, setCompany] = useState(""); // honeypot — must stay empty
   const [errors, setErrors] = useState<LeadErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -38,7 +39,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, company }),
       });
       const data = (await res.json().catch(() => ({ ok: false }))) as ContactResponse;
 
@@ -59,6 +60,7 @@ export default function ContactForm() {
 
   const reset = () => {
     setForm(EMPTY_LEAD);
+    setCompany("");
     setErrors({});
     setServerError(null);
     setSubmitted(false);
@@ -117,6 +119,11 @@ export default function ContactForm() {
         <div style={css("margin-bottom:24px")}>
           <label htmlFor="message" style={css("display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px")}>Project details</label>
           <textarea id="message" name="message" value={form.message} onChange={onField} rows={4} placeholder="e.g. 6 windows and a front door for a 1930s semi…" className="field" style={css("resize:vertical")}></textarea>
+        </div>
+        {/* honeypot — hidden from real users; bots that fill it are dropped */}
+        <div aria-hidden="true" style={css("position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden")}>
+          <label htmlFor="company">Company</label>
+          <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
         </div>
         {serverError && (
           <div role="alert" style={css("font-size:13px;color:#b4453f;background:#fbeeed;border:1px solid #f0cfcc;border-radius:2px;padding:10px 14px;margin-bottom:16px")}>{serverError}</div>
