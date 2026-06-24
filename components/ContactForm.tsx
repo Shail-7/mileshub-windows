@@ -2,24 +2,20 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { css } from "@/lib/css";
 import { SERVICES } from "@/lib/data";
+import { validateLead, EMPTY_LEAD, type Lead, type LeadErrors } from "@/lib/validation";
 
-interface FormState {
-  name: string;
-  email: string;
-  phone: string;
-  postcode: string;
-  service: string;
-  message: string;
+interface ContactResponse {
+  ok: boolean;
+  error?: string;
+  errors?: LeadErrors;
 }
 
-type FieldErrors = Partial<Record<keyof FormState, string>>;
-
-const EMPTY: FormState = { name: "", email: "", phone: "", postcode: "", service: "", message: "" };
-
 export default function ContactForm() {
-  const [form, setForm] = useState<FormState>(EMPTY);
-  const [errors, setErrors] = useState<FieldErrors>({});
+  const [form, setForm] = useState<Lead>(EMPTY_LEAD);
+  const [errors, setErrors] = useState<LeadErrors>({});
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const onField = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,29 +23,44 @@ export default function ContactForm() {
     setErrors((errs) => ({ ...errs, [name]: "" }));
   };
 
-  const validate = (f: FormState): FieldErrors => {
-    const errs: FieldErrors = {};
-    if (!f.name.trim()) errs.name = "Please enter your name";
-    if (!f.phone.trim() || f.phone.replace(/\D/g, "").length < 7) errs.phone = "Enter a valid phone number";
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())) errs.email = "Enter a valid email";
-    if (!f.service) errs.service = "Please choose a service";
-    return errs;
-  };
-
-  const submitForm = (e: FormEvent<HTMLFormElement>) => {
+  const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const errs = validate(form);
-    if (Object.keys(errs).length) {
-      setErrors(errs);
+    setServerError(null);
+
+    const clientErrors = validateLead(form);
+    if (Object.keys(clientErrors).length) {
+      setErrors(clientErrors);
       return;
     }
-    setErrors({});
-    setSubmitted(true);
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = (await res.json().catch(() => ({ ok: false }))) as ContactResponse;
+
+      if (res.ok && data.ok) {
+        setErrors({});
+        setSubmitted(true);
+      } else if (res.status === 422 && data.errors) {
+        setErrors(data.errors);
+      } else {
+        setServerError(data.error || "Something went wrong. Please try again.");
+      }
+    } catch {
+      setServerError("Network error — please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reset = () => {
-    setForm(EMPTY);
+    setForm(EMPTY_LEAD);
     setErrors({});
+    setServerError(null);
     setSubmitted(false);
   };
 
@@ -107,7 +118,12 @@ export default function ContactForm() {
           <label htmlFor="message" style={css("display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px")}>Project details</label>
           <textarea id="message" name="message" value={form.message} onChange={onField} rows={4} placeholder="e.g. 6 windows and a front door for a 1930s semi…" className="field" style={css("resize:vertical")}></textarea>
         </div>
-        <button type="submit" className="btn-accent" style={css("width:100%;font-size:16px;font-weight:600;padding:16px")}>Request my free quote</button>
+        {serverError && (
+          <div role="alert" style={css("font-size:13px;color:#b4453f;background:#fbeeed;border:1px solid #f0cfcc;border-radius:2px;padding:10px 14px;margin-bottom:16px")}>{serverError}</div>
+        )}
+        <button type="submit" disabled={submitting} className="btn-accent" style={{ ...css("width:100%;font-size:16px;font-weight:600;padding:16px"), opacity: submitting ? 0.7 : 1, cursor: submitting ? "default" : "pointer" }}>
+          {submitting ? "Sending…" : "Request my free quote"}
+        </button>
         <p style={css("font-size:12px;color:#9a9ea4;text-align:center;margin:14px 0 0")}>We&apos;ll only use your details to respond to this enquiry.</p>
       </form>
     </div>
