@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0}
+  ::selection{background:#b3804f;color:#fff}
+  input,select,textarea,button{font-family:inherit}
+  @keyframes mhFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes mhSheen{0%{transform:translateX(-120%) skewX(-18deg)}60%,100%{transform:translateX(220%) skewX(-18deg)}}
+  /* group-hover effects (cannot be expressed inline) */
+  .mh-card .mh-img{transition:transform 1s cubic-bezier(.16,.7,.3,1),filter .6s ease}
+  .mh-card:hover .mh-img{transform:scale(1.07);filter:brightness(1.03)}
+  .mh-card .mh-arrow{transition:transform .35s cubic-bezier(.16,.7,.3,1)}
+  .mh-card:hover .mh-arrow{transform:translateX(6px)}
+  .mh-gal .mh-img{transition:transform 1.1s cubic-bezier(.16,.7,.3,1)}
+  .mh-gal:hover .mh-img{transform:scale(1.08)}
+  .mh-gal .mh-cap{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+  .mh-gal:hover .mh-cap{opacity:1;transform:none}
+  .mh-gal .mh-veil{opacity:.18;transition:opacity .45s ease}
+  .mh-gal:hover .mh-veil{opacity:.5}
+  .mh-tilt{transition:transform .5s cubic-bezier(.16,.7,.3,1),box-shadow .5s ease}
+  .mh-tilt:hover{transform:translateY(-6px);box-shadow:0 26px 54px rgba(38,41,46,.16)}
+  @keyframes mhFade{from{opacity:0}to{opacity:1}}
+  @keyframes mhSwing{0%{transform:perspective(1200px) rotateY(0deg)}100%{transform:perspective(1200px) rotateY(-24deg)}}
+  .mh-hinge{transform-box:fill-box;transform-origin:left center;animation:mhSwing 2.4s cubic-bezier(.16,.7,.3,1) .6s forwards}
+  .mh-beam{animation:mhSheen 6s ease-in-out 1.2s infinite}
+  /* glass sheen sweep across product illustration on hover */
+  .mh-card .mh-shine,.mh-gal .mh-shine{position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-170%) skewX(-16deg);pointer-events:none;z-index:2}
+  .mh-card:hover .mh-shine,.mh-gal:hover .mh-shine{transition:transform 1.1s cubic-bezier(.16,.7,.3,1);transform:translateX(330%) skewX(-16deg)}
+  /* elegant on-scroll image reveal: curtain wipe + slow settle (animation-driven so it always wins the cascade) */
+  @keyframes mhCurtain{from{clip-path:inset(0 0 100% 0 round 4px);-webkit-clip-path:inset(0 0 100% 0 round 4px)}to{clip-path:inset(0 0 0.01% 0 round 4px);-webkit-clip-path:inset(0 0 0.01% 0 round 4px)}}
+  @keyframes mhSettle{from{transform:scale(1.18)}to{transform:scale(1)}}
+  .mh-rimg{clip-path:inset(0 0 100% 0 round 4px);-webkit-clip-path:inset(0 0 100% 0 round 4px)}
+  [data-shown] .mh-rimg,[data-shown].mh-rimg{animation:mhCurtain 1.3s cubic-bezier(.22,.61,.36,1) forwards}
+  [data-shown] .mh-rev{animation:mhSettle 1.5s cubic-bezier(.22,.61,.36,1)}
+  @media (prefers-reduced-motion: reduce){ .mh-rimg{clip-path:none !important;-webkit-clip-path:none !important} [data-shown] .mh-rimg,[data-shown].mh-rimg,[data-shown] .mh-rev{animation:none} }
+  /* hero carousel — full bleed */
+  @keyframes mhKen{from{transform:scale(1.04)}to{transform:scale(1.15)}}
+  .mh-ken{animation:mhKen 19s ease-in-out infinite alternate}
+  @keyframes mhUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+  .mh-hero [data-hu]{animation:mhUp 1s cubic-bezier(.16,.7,.3,1) forwards}
+  .mh-dot{height:8px;width:8px;border-radius:8px;border:none;cursor:pointer;background:rgba(255,255,255,.45);transition:all .45s ease;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .mh-hero[data-active="0"] .mh-dot[data-dot="0"],.mh-hero[data-active="1"] .mh-dot[data-dot="1"],.mh-hero[data-active="2"] .mh-dot[data-dot="2"]{background:#fff;width:26px}
+</style>
+</helmet>
+
+<div style="--accent:{{accent}};--gcols:{{galleryCols}};font-family:'Hanken Grotesk',sans-serif;background:#f6f4ef;color:#26292e;min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden">
+
+  <!-- ===================== HEADER ===================== -->
+  <header style="position:sticky;top:0;z-index:60;background:rgba(246,244,239,0.82);backdrop-filter:blur(14px);border-bottom:1px solid #e4dfd4">
+    <div style="max-width:1240px;margin:0 auto;padding:0 32px;height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <button onClick="{{ goHome }}" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;gap:12px">
+        <span style="width:44px;height:44px;border-radius:7px;background:#33312e;display:grid;place-items:center;overflow:hidden;flex:none"><img src="assets/mileshub-mark.png" alt="Mileshub Windows logo" style="width:36px;height:auto;display:block"></span>
+        <span style="font-family:'Schibsted Grotesk',sans-serif;font-weight:800;letter-spacing:-0.02em;font-size:19px;line-height:1;color:#26292e">MILESHUB <span style="font-weight:500;color:var(--accent,#b3804f)">WINDOWS</span></span>
+      </button>
+      <nav style="display:flex;align-items:center;gap:30px">
+        <button onClick="{{ goServicesS }}" style="background:none;border:none;cursor:pointer;font-size:15px;font-weight:500;color:#3a3e44;padding:6px 0" style-hover="color:#b3804f">Services</button>
+        <button onClick="{{ goGalleryS }}" style="background:none;border:none;cursor:pointer;font-size:15px;font-weight:500;color:#3a3e44;padding:6px 0" style-hover="color:#b3804f">Our Work</button>
+        <button onClick="{{ goReviewsS }}" style="background:none;border:none;cursor:pointer;font-size:15px;font-weight:500;color:#3a3e44;padding:6px 0" style-hover="color:#b3804f">Reviews</button>
+        <button onClick="{{ goAboutS }}" style="background:none;border:none;cursor:pointer;font-size:15px;font-weight:500;color:#3a3e44;padding:6px 0" style-hover="color:#b3804f">About</button>
+        <a href="{{ phoneHref }}" style="font-size:15px;font-weight:600;color:#26292e;text-decoration:none;display:flex;align-items:center;gap:7px">{{ phone }}</a>
+        <button onClick="{{ goContact }}" style="background:var(--accent,#b3804f);border:none;cursor:pointer;color:#fff;font-size:14px;font-weight:600;padding:11px 20px;border-radius:2px;letter-spacing:0.01em;position:relative;overflow:hidden" style-hover="background:#9c6c3f">Free Quote</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HOME ===================== -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Home">
+
+    <!-- HERO -->
+    <section class="mh-hero" data-active="{{ heroActive }}" style="position:relative;overflow:hidden;background:#16181b;min-height:90vh;display:flex;align-items:center">
+      <div data-parallax="0.16" style="position:absolute;left:0;right:0;top:-18%;height:136%;will-change:transform">
+        <sc-for list="{{ heroSlides }}" as="s" hint-placeholder-count="3">
+          <div style="position:absolute;inset:0;opacity:{{ s.op }};transition:opacity 1.5s ease">
+            <div class="mh-ken" role="img" aria-label="Mileshub windows and doors installation" style="width:100%;height:100%;background-image:url('{{ s.img }}');background-size:cover;background-position:center"></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,17,20,0.9) 0%,rgba(16,17,20,0.66) 38%,rgba(16,17,20,0.22) 72%,rgba(16,17,20,0.04) 100%);pointer-events:none"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,17,20,0.3) 0%,rgba(16,17,20,0) 26%,rgba(16,17,20,0.44) 100%);pointer-events:none"></div>
+      <div style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:96px 32px;width:100%;color:#fff">
+        <div style="max-width:670px">
+          <div data-hu style="animation-delay:.05s;display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:0.18em;color:#e7c9a8;text-transform:uppercase;margin-bottom:26px"><span style="width:28px;height:1px;background:#e7c9a8"></span>Windows · Doors · Living Spaces</div>
+          <h1 data-hu style="animation-delay:.14s;font-family:'Schibsted Grotesk',sans-serif;font-weight:800;font-size:clamp(42px,5.8vw,76px);line-height:1.0;letter-spacing:-0.03em;margin:0 0 26px;color:#fff;text-shadow:0 2px 36px rgba(0,0,0,0.3)">Windows &amp; doors, crafted for the way you live.</h1>
+          <p data-hu style="animation-delay:.24s;font-size:19px;line-height:1.6;color:#dcdee2;margin:0 0 38px;max-width:548px">Premium uPVC, aluminium and timber-style glazing — surveyed by experts, made to measure and installed across the UK. Beautiful, efficient, built to last.</p>
+          <div data-hu style="animation-delay:.34s;display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px">
+            <button onClick="{{ goContact }}" style="background:var(--accent,#b3804f);border:none;cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:17px 32px;border-radius:2px;box-shadow:0 14px 34px rgba(0,0,0,0.28)" style-hover="background:#9c6c3f">Get your free quote</button>
+            <button onClick="{{ goGalleryS }}" style="background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.38);cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:17px 30px;border-radius:2px" style-hover="background:rgba(255,255,255,0.16)">View our work</button>
+          </div>
+          <div data-hu style="animation-delay:.44s;display:flex;gap:34px;flex-wrap:wrap;align-items:center">
+            <div><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#fff"><span data-count="1" data-suffix="+">1+</span></div><div style="font-size:13px;color:#aeb2b8;letter-spacing:0.02em">Years installing</div></div>
+            <div style="width:1px;height:36px;background:rgba(255,255,255,0.22)"></div>
+            <div><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#fff"><span data-count="150" data-suffix="+">150+</span></div><div style="font-size:13px;color:#aeb2b8;letter-spacing:0.02em">Homes upgraded</div></div>
+            <div style="width:1px;height:36px;background:rgba(255,255,255,0.22)"></div>
+            <div><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#fff"><span data-count="4.8" data-decimals="1">4.8</span><span style="color:#e7c9a8">★</span></div><div style="font-size:13px;color:#aeb2b8;letter-spacing:0.02em">Avg. rating</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:28px;left:0;right:0;z-index:4;display:flex;justify-content:center;gap:9px">
+        <sc-for list="{{ heroDots }}" as="d" hint-placeholder-count="3">
+          <button class="mh-dot" onClick="{{ d.on }}" data-dot="{{ d.i }}" aria-label="Show hero slide"></button>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section style="border-top:1px solid #e4dfd4;border-bottom:1px solid #e4dfd4;background:#f1eee7">
+      <div data-reveal style="max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;flex-wrap:wrap;gap:14px 48px;justify-content:space-between;align-items:center;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease">
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44"><span style="color:var(--accent,#b3804f);font-size:18px">●</span>Fully Insured &amp; Guaranteed</div>
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44"><span style="color:var(--accent,#b3804f);font-size:18px">●</span>10-Year Guarantee</div>
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44"><span style="color:var(--accent,#b3804f);font-size:18px">●</span>0% Finance Available</div>
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44"><span style="color:var(--accent,#b3804f);font-size:18px">●</span>Free No-Obligation Survey</div>
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44"><span style="color:var(--accent,#b3804f);font-size:18px">●</span>5★ Rated Installers</div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services-anchor" style="max-width:1240px;margin:0 auto;padding:96px 32px 90px">
+      <div data-reveal style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:48px;opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+        <div>
+          <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:14px">What we do</div>
+          <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0;max-width:520px;line-height:1.05">A complete range, fitted to a single standard.</h2>
+        </div>
+        <p style="font-size:16px;color:#55595f;max-width:340px;margin:0">From a single replacement window to a full home transformation — every product surveyed, made and installed by our own teams.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px">
+        <sc-for list="{{ services }}" as="s">
+          <button onClick="{{ s.go }}" class="mh-card mh-tilt" data-reveal data-reveal-delay="{{ s.delay }}" style="text-align:left;background:#fff;border:1px solid #e4dfd4;cursor:pointer;padding:0;display:flex;flex-direction:column;border-radius:4px;overflow:hidden;opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .6s cubic-bezier(.16,.7,.3,1),box-shadow .5s ease">
+            <div class="mh-rimg" style="aspect-ratio:16/11;width:100%;overflow:hidden;position:relative">
+              <div class="mh-img mh-rev" style="position:absolute;inset:0;background-image:url('{{ s.img }}');background-size:cover;background-position:center"></div>
+              <div class="mh-shine"></div>
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(29,32,36,0) 45%,rgba(29,32,36,0.55) 100%)"></div>
+              <span style="position:absolute;left:14px;top:14px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#fff;background:rgba(38,41,46,0.55);backdrop-filter:blur(4px);padding:5px 10px;border-radius:2px">{{ s.kicker }}</span>
+              <div style="position:absolute;left:18px;bottom:14px;right:18px;font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:21px;letter-spacing:-0.01em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,0.3)">{{ s.name }}</div>
+            </div>
+            <div style="padding:20px 22px 22px;display:flex;flex-direction:column;flex:1">
+              <div style="font-size:14px;color:#6a6e75;line-height:1.55;margin-bottom:16px;flex:1">{{ s.tag }}</div>
+              <div style="font-size:13px;font-weight:600;color:var(--accent,#b3804f);display:flex;align-items:center;gap:7px">Explore <span class="mh-arrow">→</span></div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ABOUT / STATS -->
+    <section id="about-anchor" style="background:#26292e;color:#fff;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-120px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(179,128,79,0.22),rgba(179,128,79,0) 70%)"></div>
+      <div style="max-width:1240px;margin:0 auto;padding:96px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:64px;align-items:center;position:relative">
+        <div data-reveal style="opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease">
+          <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:18px">Why Mileshub</div>
+          <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0 0 22px;line-height:1.06">The detail others skip is the reason we last.</h2>
+          <p style="font-size:17px;line-height:1.65;color:#c2c5ca;margin:0 0 18px">No subcontractors, no sales pressure, no surprise costs. One team takes you from first measure to final clean-up — and stands behind it for a decade.</p>
+          <p style="font-size:17px;line-height:1.65;color:#c2c5ca;margin:0 0 30px">We work with homeowners and trade partners alike, matching the right glazing system to your property, budget and timeline.</p>
+          <button onClick="{{ goContact }}" style="background:#fff;border:none;cursor:pointer;color:#26292e;font-size:15px;font-weight:600;padding:14px 26px;border-radius:2px" style-hover="background:#eee">Book a free survey</button>
+        </div>
+        <div data-reveal data-reveal-delay="120" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease">
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:28px 24px"><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent,#b3804f)">A+</div><div style="font-size:14px;color:#b9bcc1;margin-top:6px">Energy-rated frames as standard</div></div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:28px 24px"><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent,#b3804f)"><span data-count="10" data-suffix="yr">10yr</span></div><div style="font-size:14px;color:#b9bcc1;margin-top:6px">Guarantee on every job</div></div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:28px 24px"><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent,#b3804f)"><span data-count="150" data-suffix="+">150+</span></div><div style="font-size:14px;color:#b9bcc1;margin-top:6px">Installations completed</div></div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:28px 24px"><div style="font-family:'Schibsted Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent,#b3804f)"><span data-count="0" data-suffix="%">0%</span></div><div style="font-size:14px;color:#b9bcc1;margin-top:6px">Finance options available</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section style="max-width:1240px;margin:0 auto;padding:96px 32px 80px">
+      <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:14px;text-align:center">How it works</div>
+        <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,42px);letter-spacing:-0.025em;margin:0 0 54px;text-align:center;line-height:1.05">Four steps, no surprises.</h2>
+      </div>
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px">
+        <div style="position:absolute;top:28px;left:6%;right:6%;height:2px;background:linear-gradient(90deg,#e4dfd4,var(--accent,#b3804f),#e4dfd4)"></div>
+        <sc-for list="{{ steps }}" as="p" hint-placeholder-count="4">
+          <div data-reveal data-reveal-delay="{{ p.delay }}" style="position:relative;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,.7,.3,1)">
+            <div style="width:56px;height:56px;border-radius:50%;background:#f6f4ef;border:2px solid var(--accent,#b3804f);display:grid;place-items:center;font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--accent,#b3804f);margin-bottom:22px;position:relative;z-index:1">{{ p.num }}</div>
+            <div style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:19px;margin-bottom:10px">{{ p.title }}</div>
+            <p style="font-size:14px;color:#6a6e75;line-height:1.6;margin:0">{{ p.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery-anchor" style="background:#f1eee7;border-top:1px solid #e4dfd4;border-bottom:1px solid #e4dfd4">
+      <div style="max-width:1240px;margin:0 auto;padding:90px 32px">
+        <div data-reveal style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:42px;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease">
+          <div>
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:14px">Our work</div>
+            <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0;line-height:1.05">Recent installations.</h2>
+          </div>
+          <button onClick="{{ goContact }}" style="background:none;border:1px solid #cfc8ba;cursor:pointer;color:#26292e;font-size:15px;font-weight:600;padding:13px 24px;border-radius:2px" style-hover="border-color:#26292e">Start your project</button>
+        </div>
+        <div style="display:grid;grid-template-columns:var(--gcols,repeat(auto-fit,minmax(240px,1fr)));gap:14px">
+          <sc-for list="{{ galleryItems }}" as="g">
+            <button onClick="{{ g.onClick }}" class="mh-gal mh-rimg" data-reveal data-reveal-delay="{{ g.delay }}" style="border:none;cursor:pointer;padding:0;aspect-ratio:1/1;border-radius:4px;position:relative;overflow:hidden;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,.7,.3,1)">
+              <div class="mh-img mh-rev" role="img" aria-label="{{ g.label }}" style="position:absolute;inset:0;background-image:url('{{ g.img }}');background-size:cover;background-position:center"></div>
+              <div class="mh-shine"></div>
+              <div class="mh-veil" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(29,32,36,0) 40%,rgba(29,32,36,0.85) 100%)"></div>
+              <div class="mh-cap" style="position:absolute;left:16px;bottom:14px;right:48px;color:#fff;font-size:14px;font-weight:600;text-align:left;line-height:1.35">{{ g.label }}</div>
+              <span style="position:absolute;bottom:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.92);color:#26292e;display:grid;place-items:center;font-size:15px">⤢</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="reviews-anchor" style="max-width:1240px;margin:0 auto;padding:96px 32px 80px">
+      <div data-reveal style="text-align:center;margin-bottom:54px;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:14px">Reviews</div>
+        <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0 0 12px;line-height:1.05">Rated 4.8 out of 5 by our customers.</h2>
+        <p style="font-size:16px;color:#6a6e75;margin:0">Based on 16 verified reviews from homeowners across the UK.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px">
+        <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+          <div class="mh-tilt" data-reveal data-reveal-delay="{{ r.delay }}" style="background:#fff;border:1px solid #e4dfd4;border-radius:4px;padding:32px 28px 28px;display:flex;flex-direction:column;position:relative;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .6s cubic-bezier(.16,.7,.3,1),box-shadow .5s ease">
+            <span style="position:absolute;top:12px;right:22px;font-family:Georgia,serif;font-size:72px;line-height:1;color:#efe6d8">&rdquo;</span>
+            <div style="color:var(--accent,#b3804f);font-size:16px;letter-spacing:3px;margin-bottom:14px">★★★★★</div>
+            <div style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.01em;color:#26292e;margin-bottom:10px;line-height:1.3;position:relative">{{ r.title }}</div>
+            <p style="font-size:15px;line-height:1.6;color:#55595f;margin:0 0 22px;flex:1;position:relative">{{ r.quote }}</p>
+            <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #efe9de;padding-top:18px">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--accent,#b3804f);display:grid;place-items:center;font-family:'Schibsted Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;flex:none">{{ r.initial }}</div>
+              <div><div style="font-weight:600;font-size:14px">{{ r.name }}</div><div style="font-size:13px;color:#8a8e95">{{ r.place }} · {{ r.date }}</div></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- FINANCE BAND -->
+    <section style="max-width:1240px;margin:0 auto 90px;padding:0 32px">
+      <div data-reveal style="background:var(--accent,#b3804f);border-radius:5px;padding:58px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;align-items:center;color:#fff;position:relative;overflow:hidden;opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease">
+        <div style="position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,0.1)"></div>
+        <div style="position:relative">
+          <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-0.02em;margin:0 0 12px;line-height:1.08">Spread the cost. 0% finance available.</h2>
+          <p style="font-size:17px;line-height:1.55;color:rgba(255,255,255,0.92);margin:0;max-width:480px">Flexible payment plans on installations — get the windows you want now and pay over time, subject to status.</p>
+        </div>
+        <div style="display:flex;justify-content:flex-end;position:relative">
+          <button onClick="{{ goContact }}" style="background:#26292e;border:none;cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:16px 30px;border-radius:2px" style-hover="background:#16181b">Get a free quote</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  </sc-if>
+
+  <!-- ===================== SERVICE DETAIL ===================== -->
+  <sc-if value="{{ isService }}">
+  <main data-screen-label="Service detail">
+    <section style="border-bottom:1px solid #e4dfd4;background:#f1eee7">
+      <div style="max-width:1240px;margin:0 auto;padding:18px 32px;font-size:13px;color:#7c8088;display:flex;gap:8px;align-items:center">
+        <button onClick="{{ goHome }}" style="background:none;border:none;cursor:pointer;color:#7c8088;font-size:13px;padding:0" style-hover="color:#26292e">Home</button>
+        <span>/</span><button onClick="{{ goServicesS }}" style="background:none;border:none;cursor:pointer;color:#7c8088;font-size:13px;padding:0" style-hover="color:#26292e">Services</button>
+        <span>/</span><span style="color:#26292e;font-weight:600">{{ selectedService.name }}</span>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:64px 32px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:60px;align-items:center">
+      <div data-reveal style="opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:18px">{{ selectedService.kicker }}</div>
+        <h1 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:800;font-size:clamp(36px,4.6vw,58px);letter-spacing:-0.03em;line-height:1.03;margin:0 0 22px">{{ selectedService.name }}</h1>
+        <p style="font-size:18px;line-height:1.62;color:#55595f;margin:0 0 32px">{{ selectedService.blurb }}</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <button onClick="{{ goContact }}" style="background:var(--accent,#b3804f);border:none;cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:15px 28px;border-radius:2px" style-hover="background:#9c6c3f">Get a quote for this</button>
+          <button onClick="{{ goGalleryS }}" style="background:none;border:1px solid #cfc8ba;cursor:pointer;color:#26292e;font-size:16px;font-weight:600;padding:15px 26px;border-radius:2px" style-hover="border-color:#26292e">See examples</button>
+        </div>
+      </div>
+      <div class="mh-rimg" data-reveal data-reveal-delay="120" style="aspect-ratio:4/3;border:1px solid #e0d9cc;border-radius:4px;overflow:hidden;box-shadow:0 28px 56px rgba(38,41,46,0.14);opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease">
+        <div class="mh-rev" role="img" aria-label="{{ selectedService.name }}" style="width:100%;height:100%;background-image:url('{{ selectedService.img }}');background-size:cover;background-position:center"></div>
+      </div>
+    </section>
+
+    <section style="background:#26292e;color:#fff">
+      <div style="max-width:1240px;margin:0 auto;padding:80px 32px">
+        <h2 data-reveal style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-0.025em;margin:0 0 44px;line-height:1.05;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease">Why choose our {{ selectedService.shortName }}.</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px">
+          <sc-for list="{{ selectedService.features }}" as="f" hint-placeholder-count="4">
+            <div data-reveal data-reveal-delay="{{ f.delay }}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:30px 28px;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .6s cubic-bezier(.16,.7,.3,1)">
+              <div style="width:42px;height:42px;border-radius:50%;background:rgba(179,128,79,0.16);color:var(--accent,#b3804f);display:grid;place-items:center;font-size:18px;margin-bottom:16px">✦</div>
+              <div style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:17px;margin-bottom:10px">{{ f.title }}</div>
+              <p style="font-size:14px;line-height:1.6;color:#b9bcc1;margin:0">{{ f.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div data-reveal style="opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:14px">Options &amp; finishes</div>
+        <h3 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.02em;margin:0 0 18px;line-height:1.1">Specified around your home.</h3>
+        <p style="font-size:16px;line-height:1.62;color:#55595f;margin:0">Choose from a wide range of colours, glass options, hardware and security upgrades. Our surveyor will walk you through every choice so the finished result suits your property and budget.</p>
+      </div>
+      <div data-reveal data-reveal-delay="100" style="display:flex;flex-direction:column;gap:1px;background:#e4dfd4;border:1px solid #e4dfd4;border-radius:4px;overflow:hidden;opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+        <sc-for list="{{ selectedService.options }}" as="o" hint-placeholder-count="4">
+          <div style="background:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px">
+            <span style="font-size:15px;font-weight:600;color:#34373d">{{ o.label }}</span>
+            <span style="font-size:13px;color:#8a8e95;text-align:right">{{ o.value }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- RELATED -->
+    <section style="background:#f1eee7;border-top:1px solid #e4dfd4">
+      <div style="max-width:1240px;margin:0 auto;padding:72px 32px">
+        <h3 data-reveal style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.02em;margin:0 0 30px;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease">Explore more services</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+          <sc-for list="{{ relatedServices }}" as="s" hint-placeholder-count="4">
+            <button onClick="{{ s.go }}" class="mh-card mh-tilt" data-reveal data-reveal-delay="{{ s.delay }}" style="text-align:left;background:#fff;border:1px solid #e4dfd4;cursor:pointer;padding:0;display:flex;flex-direction:column;border-radius:4px;overflow:hidden;opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .6s cubic-bezier(.16,.7,.3,1),box-shadow .5s ease">
+              <div class="mh-rimg" style="aspect-ratio:16/10;overflow:hidden">
+                <div class="mh-img mh-rev" style="width:100%;height:100%;background-image:url('{{ s.img }}');background-size:cover;background-position:center"></div>
+              </div>
+              <div style="padding:20px 22px;display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:17px">{{ s.name }}</span>
+                <span style="font-size:13px;color:#6a6e75;line-height:1.5">{{ s.tag }}</span>
+                <span style="font-size:13px;font-weight:600;color:var(--accent,#b3804f);margin-top:4px">Explore <span class="mh-arrow" style="display:inline-block">→</span></span>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <!-- ===================== CONTACT ===================== -->
+  <sc-if value="{{ isContact }}">
+  <main data-screen-label="Contact" style="max-width:1240px;margin:0 auto;padding:64px 32px 90px">
+    <div data-reveal style="max-width:640px;margin-bottom:50px;opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent,#b3804f);text-transform:uppercase;margin-bottom:16px">Free quote</div>
+      <h1 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:800;font-size:clamp(36px,4.6vw,56px);letter-spacing:-0.03em;line-height:1.03;margin:0 0 18px">Tell us about your project.</h1>
+      <p style="font-size:18px;line-height:1.6;color:#55595f;margin:0">No pressure, no obligation. Share a few details and we'll arrange a free survey and itemised quote — usually within two working days.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:48px;align-items:start">
+      <!-- FORM -->
+      <div data-reveal style="background:#fff;border:1px solid #e4dfd4;border-radius:4px;padding:36px 34px;box-shadow:0 18px 44px rgba(38,41,46,0.06);opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+        <sc-if value="{{ submitted }}">
+          <div style="text-align:center;padding:30px 10px">
+            <div style="width:62px;height:62px;border-radius:50%;background:var(--accent,#b3804f);color:#fff;display:grid;place-items:center;font-size:30px;margin:0 auto 22px">✓</div>
+            <h3 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:24px;margin:0 0 12px">Thank you — request received.</h3>
+            <p style="font-size:16px;color:#55595f;line-height:1.6;margin:0 0 26px">A member of the Mileshub team will be in touch shortly to arrange your free survey.</p>
+            <button onClick="{{ resetForm }}" style="background:none;border:1px solid #cfc8ba;cursor:pointer;color:#26292e;font-size:15px;font-weight:600;padding:12px 24px;border-radius:2px" style-hover="border-color:#26292e">Submit another</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submitForm }}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">Full name</label>
+              <input name="name" value="{{ form.name }}" onChange="{{ onField }}" placeholder="Jane Smith" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none" style-focus="border-color:#b3804f">
+              <sc-if value="{{ errors.name }}"><div style="font-size:12px;color:#b4453f;margin-top:6px">{{ errors.name }}</div></sc-if>
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">Phone</label>
+              <input name="phone" value="{{ form.phone }}" onChange="{{ onField }}" placeholder="07700 900000" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none" style-focus="border-color:#b3804f">
+              <sc-if value="{{ errors.phone }}"><div style="font-size:12px;color:#b4453f;margin-top:6px">{{ errors.phone }}</div></sc-if>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">Email</label>
+              <input name="email" value="{{ form.email }}" onChange="{{ onField }}" placeholder="jane@email.com" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none" style-focus="border-color:#b3804f">
+              <sc-if value="{{ errors.email }}"><div style="font-size:12px;color:#b4453f;margin-top:6px">{{ errors.email }}</div></sc-if>
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">Postcode</label>
+              <input name="postcode" value="{{ form.postcode }}" onChange="{{ onField }}" placeholder="SW1A 1AA" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none" style-focus="border-color:#b3804f">
+            </div>
+          </div>
+          <div style="margin-bottom:18px">
+            <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">I'm interested in</label>
+            <select name="service" value="{{ form.service }}" onChange="{{ onField }}" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none" style-focus="border-color:#b3804f">
+              <option value="">Select a service…</option>
+              <sc-for list="{{ serviceNames }}" as="n" hint-placeholder-count="8"><option value="{{ n }}">{{ n }}</option></sc-for>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+            <sc-if value="{{ errors.service }}"><div style="font-size:12px;color:#b4453f;margin-top:6px">{{ errors.service }}</div></sc-if>
+          </div>
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:13px;font-weight:600;color:#34373d;margin-bottom:7px">Project details</label>
+            <textarea name="message" value="{{ form.message }}" onChange="{{ onField }}" rows="4" placeholder="e.g. 6 windows and a front door for a 1930s semi…" style="width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none;resize:vertical" style-focus="border-color:#b3804f"></textarea>
+          </div>
+          <button type="submit" style="width:100%;background:var(--accent,#b3804f);border:none;cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:16px;border-radius:2px" style-hover="background:#9c6c3f">Request my free quote</button>
+          <p style="font-size:12px;color:#9a9ea4;text-align:center;margin:14px 0 0">We'll only use your details to respond to this enquiry.</p>
+        </form>
+        </sc-if>
+      </div>
+
+      <!-- DETAILS -->
+      <div data-reveal data-reveal-delay="120" style="opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease">
+        <div style="display:flex;flex-direction:column;gap:1px;background:#e4dfd4;border:1px solid #e4dfd4;border-radius:4px;overflow:hidden;margin-bottom:24px">
+          <div style="background:#fff;padding:22px 24px"><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9a9ea4;margin-bottom:6px">Call us</div><div style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:22px">{{ phone }}</div></div>
+          <div style="background:#fff;padding:22px 24px"><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9a9ea4;margin-bottom:6px">Email</div><div style="font-size:16px;font-weight:500">Sales@Mileshubwindows.co.uk</div></div>
+          <div style="background:#fff;padding:22px 24px"><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9a9ea4;margin-bottom:6px">Office</div><div style="font-size:16px;font-weight:500;line-height:1.5">Wickets Way<br>IG6 3DF, United Kingdom</div></div>
+          <div style="background:#fff;padding:22px 24px"><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9a9ea4;margin-bottom:6px">Opening hours</div><div style="font-size:14px;color:#34373d;line-height:1.7">Mon–Sat&nbsp;&nbsp;9:00 – 19:00<br>Sunday&nbsp;&nbsp;Closed</div></div>
+        </div>
+        <div class="mh-rimg" data-reveal style="aspect-ratio:16/10;border:1px solid #e0d9cc;border-radius:4px;overflow:hidden;position:relative">
+          <div class="mh-rev" role="img" aria-label="Get in touch with our team" style="width:100%;height:100%;background-image:url('{{ img.contact }}');background-size:cover;background-position:center"></div>
+          <div style="position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,0.94);padding:8px 14px;border-radius:2px;font-size:13px;font-weight:600;color:#26292e;display:flex;align-items:center;gap:7px"><span style="color:var(--accent,#b3804f)">●</span>We're here to help</div>
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ===================== CTA + FOOTER (all screens) ===================== -->
+  <section style="background:#1d2024;color:#fff;position:relative;overflow:hidden">
+    <div style="position:absolute;bottom:-100px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(179,128,79,0.18),rgba(179,128,79,0) 70%)"></div>
+    <div data-reveal style="max-width:1240px;margin:0 auto;padding:74px 32px;text-align:center;position:relative;opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease">
+      <h2 style="font-family:'Schibsted Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,46px);letter-spacing:-0.03em;margin:0 0 18px;line-height:1.05">Ready for a free, no-obligation quote?</h2>
+      <p style="font-size:18px;color:#b9bcc1;margin:0 auto 32px;max-width:520px">Book a survey at a time that suits you. Most quotes are back within two working days.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button onClick="{{ goContact }}" style="background:var(--accent,#b3804f);border:none;cursor:pointer;color:#fff;font-size:16px;font-weight:600;padding:16px 32px;border-radius:2px" style-hover="background:#9c6c3f">Get your free quote</button>
+        <a href="{{ phoneHref }}" style="background:none;border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:16px;font-weight:600;padding:16px 30px;border-radius:2px;text-decoration:none;display:inline-flex;align-items:center" style-hover="border-color:#fff">Call {{ phone }}</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:#16181b;color:#9a9ea4">
+    <div style="max-width:1240px;margin:0 auto;padding:60px 32px 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px">
+      <div style="grid-column:1/-1;max-width:320px">
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+          <span style="width:40px;height:40px;border-radius:6px;background:#33312e;display:grid;place-items:center;overflow:hidden;flex:none"><img src="assets/mileshub-mark.png" alt="Mileshub Windows logo" style="width:33px;height:auto;display:block"></span>
+          <span style="font-family:'Schibsted Grotesk',sans-serif;font-weight:800;letter-spacing:-0.02em;font-size:18px;color:#fff">MILESHUB <span style="font-weight:500;color:var(--accent,#b3804f)">WINDOWS</span></span>
+        </div>
+        <p style="font-size:14px;line-height:1.6;margin:0">Made-to-measure windows, doors and living spaces — surveyed, manufactured and installed across the UK.</p>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:14px;margin-bottom:14px">Products</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ services }}" as="s" hint-placeholder-count="8"><button onClick="{{ s.go }}" style="background:none;border:none;cursor:pointer;color:#9a9ea4;font-size:14px;text-align:left;padding:0" style-hover="color:#fff">{{ s.name }}</button></sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:14px;margin-bottom:14px">Company</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <button onClick="{{ goAboutS }}" style="background:none;border:none;cursor:pointer;color:#9a9ea4;font-size:14px;text-align:left;padding:0" style-hover="color:#fff">About us</button>
+          <button onClick="{{ goGalleryS }}" style="background:none;border:none;cursor:pointer;color:#9a9ea4;font-size:14px;text-align:left;padding:0" style-hover="color:#fff">Our work</button>
+          <button onClick="{{ goReviewsS }}" style="background:none;border:none;cursor:pointer;color:#9a9ea4;font-size:14px;text-align:left;padding:0" style-hover="color:#fff">Reviews</button>
+          <button onClick="{{ goContact }}" style="background:none;border:none;cursor:pointer;color:#9a9ea4;font-size:14px;text-align:left;padding:0" style-hover="color:#fff">Contact</button>
+        </div>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:14px;margin-bottom:14px">Get in touch</div>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <span>{{ phone }}</span>
+          <span>Sales@Mileshubwindows.co.uk</span>
+          <span>Mon–Sat&nbsp;&nbsp;9am – 7pm</span>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2a2d31"><div style="max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px"><span>© 2026 Mileshub Windows Ltd. All rights reserved.</span><span>Registered in England &amp; Wales</span></div></div>
+  </footer>
+
+  <!-- ===================== LIGHTBOX ===================== -->
+  <sc-if value="{{ lightboxOpen }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:90;background:rgba(20,21,24,0.9);display:grid;place-items:center;padding:32px;animation:mhFade .25s ease">
+      <div style="width:min(900px,92vw);position:relative">
+        <div style="aspect-ratio:4/3;border-radius:5px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,0.5)">
+          <div role="img" aria-label="{{ lightboxLabel }}" style="width:100%;height:100%;background-image:url('{{ lightboxImg }}');background-size:cover;background-position:center"></div>
+        </div>
+        <div style="margin-top:14px;color:#e7e1d6;font-size:15px;font-weight:500">{{ lightboxLabel }}</div>
+        <button onClick="{{ closeLightbox }}" style="position:absolute;top:-46px;right:0;background:none;border:none;cursor:pointer;color:#fff;font-size:30px;line-height:1">×</button>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:900},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b3804f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#b3804f&quot;,&quot;#2f6f6a&quot;,&quot;#3a5a8c&quot;,&quot;#7a5c8c&quot;,&quot;#5a6b3a&quot;]},&quot;galleryColumns&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+44 7514 506192&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const U=(id)=>id; // legacy no-op — all product imagery is generated in _buildArt()
+    const SI={upvc:'',aluminium:'',sash:'',bifold:'',composite:'',orangeries:'',conservatories:'',roofline:''};
+    this.SERVICES = [
+      { id:'upvc', name:'uPVC Windows', shortName:'uPVC windows', kicker:'Windows', img:U(SI.upvc),
+        tag:'Energy-efficient, low-maintenance windows in a huge choice of styles and colours.',
+        blurb:'Our most popular choice — warm, secure and virtually maintenance-free. Multi-chambered frames and high-performance glass keep heat in and noise out, with finishes from classic white to woodgrain foils.',
+        features:[
+          {title:'A+ energy rated',body:'Multi-chambered profiles and warm-edge spacers cut heat loss and lower your bills.'},
+          {title:'Built-in security',body:'Multi-point locking and internally beaded frames as standard on every window.'},
+          {title:'Colours & woodgrains',body:'White, grey, black, cream and realistic woodgrain foils, inside and out.'},
+          {title:'Virtually maintenance-free',body:'No painting, no rot — a quick wipe keeps them looking new for years.'}],
+        options:[{label:'Styles',value:'Casement · Tilt-turn · Flush · Bay'},{label:'Colours',value:'12 standard, 30+ on request'},{label:'Glazing',value:'Double or triple'},{label:'Guarantee',value:'10 years'}] },
+      { id:'aluminium', name:'Aluminium Windows', shortName:'aluminium windows', kicker:'Windows', img:U(SI.aluminium),
+        tag:'Slim, strong sightlines and a sleek contemporary finish for modern homes.',
+        blurb:'Ultra-slim frames maximise glass and daylight while delivering exceptional strength and durability. Powder-coated in any RAL colour, aluminium is the premium choice for a clean, architectural look.',
+        features:[
+          {title:'Slimmer sightlines',body:'More glass, less frame — for uninterrupted views and abundant light.'},
+          {title:'Exceptionally strong',body:'Large panes and tall openings made possible by aluminium\u2019s rigidity.'},
+          {title:'Any RAL colour',body:'Durable powder-coated finishes, including dual-colour inside and out.'},
+          {title:'Thermally broken',body:'Insulated cores keep modern frames as warm as they are slim.'}],
+        options:[{label:'Styles',value:'Casement · Fixed · Corner'},{label:'Finish',value:'Matt, satin or gloss'},{label:'Colours',value:'Any RAL'},{label:'Guarantee',value:'10 years'}] },
+      { id:'sash', name:'Sash Windows', shortName:'sash windows', kicker:'Windows', img:U(SI.sash),
+        tag:'Period charm with modern performance — perfect for traditional properties.',
+        blurb:'Recreate the elegance of a classic sliding sash with the warmth, security and ease of a modern window. Authentic detailing like deep bottom rails and run-through horns, with none of the draughts.',
+        features:[
+          {title:'Authentic detailing',body:'Run-through horns, deep bottom rails and slim glazing bars true to period.'},
+          {title:'Smooth, balanced glide',body:'Modern spring balances replace cords and weights for effortless operation.'},
+          {title:'Draught-proofed',body:'Integral brush seals end the rattles and draughts of original sashes.'},
+          {title:'Conservation-friendly',body:'Suitable for many listed and conservation-area properties.'}],
+        options:[{label:'Material',value:'uPVC or timber'},{label:'Bars',value:'Astragal or Georgian'},{label:'Colours',value:'Heritage range'},{label:'Guarantee',value:'10 years'}] },
+      { id:'bifold', name:'Bi-fold & Sliding Doors', shortName:'bi-fold & sliding doors', kicker:'Doors', img:U(SI.bifold),
+        tag:'Open up your home and bring the garden in with expansive glazed doors.',
+        blurb:'Transform the back of your home with doors that fold or slide away to blur the line between inside and out. Slim aluminium frames carry large panes on smooth running gear for a seamless transition.',
+        features:[
+          {title:'Open up fully',body:'Fold the whole wall away or glide panels effortlessly to one side.'},
+          {title:'Big glass, slim frames',body:'Maximum daylight and uninterrupted garden views all year round.'},
+          {title:'Weather-sealed',body:'Low thresholds and multi-point locks keep weather and intruders out.'},
+          {title:'Configured to you',body:'2 to 7 panels, opening left, right or both — to suit your space.'}],
+        options:[{label:'Type',value:'Bi-fold · Sliding · French'},{label:'Panels',value:'2–7'},{label:'Threshold',value:'Standard or low'},{label:'Guarantee',value:'10 years'}] },
+      { id:'composite', name:'Composite & Front Doors', shortName:'front doors', kicker:'Doors', img:U(SI.composite),
+        tag:'A striking, secure first impression that\u2019s built to keep the weather out.',
+        blurb:'Your front door sets the tone for the whole house. Our composite doors combine a solid, insulating core with a tough skin and high-security locking — in a wide palette of colours and styles.',
+        features:[
+          {title:'Secure by design',body:'High-security multi-point locks and reinforced frames for peace of mind.'},
+          {title:'Warm & weatherproof',body:'Insulating cores keep hallways warm and seal out wind and rain.'},
+          {title:'Colours & glass',body:'Dozens of colours, glazing designs and hardware finishes to choose from.'},
+          {title:'Tough finish',body:'Won\u2019t warp, crack or fade — just wipe clean to keep it looking sharp.'}],
+        options:[{label:'Range',value:'Composite · uPVC · Aluminium'},{label:'Colours',value:'25+ shades'},{label:'Glass',value:'Decorative options'},{label:'Guarantee',value:'10 years'}] },
+      { id:'orangeries', name:'Orangeries', shortName:'orangeries', kicker:'Living spaces', img:U(SI.orangeries),
+        tag:'A luxurious, light-filled room that adds real value and year-round comfort.',
+        blurb:'A refined alternative to a conservatory — solid pillars and a flat perimeter roof with a glazed lantern create a substantial, naturally lit room that feels like a true extension of your home.',
+        features:[
+          {title:'Year-round comfort',body:'Insulated walls and roof keep the space usable in every season.'},
+          {title:'Roof lantern',body:'A central glazed lantern floods the room with natural daylight.'},
+          {title:'Adds value',body:'A high-quality living space that enhances how you use your home.'},
+          {title:'Tailored design',body:'Designed around your home\u2019s style, brickwork and proportions.'}],
+        options:[{label:'Roof',value:'Lantern or flat'},{label:'Base',value:'Brick pillars'},{label:'Glazing',value:'Solar-control glass'},{label:'Guarantee',value:'10 years'}] },
+      { id:'conservatories', name:'Conservatories', shortName:'conservatories', kicker:'Living spaces', img:U(SI.conservatories),
+        tag:'Extra living space, beautifully glazed and made to be used all year.',
+        blurb:'From classic Victorian to lean-to and gable styles, a modern conservatory gives you the extra room you need. Advanced glazing and insulated roof options keep it comfortable through summer and winter.',
+        features:[
+          {title:'Choice of styles',body:'Victorian, Edwardian, lean-to, gable and bespoke designs.'},
+          {title:'All-season roofs',body:'Glass, tiled or hybrid roofs to control heat, light and noise.'},
+          {title:'Efficient glazing',body:'Solar-control glass keeps you cool in summer, warm in winter.'},
+          {title:'Quick to build',body:'A cost-effective way to add space with minimal disruption.'}],
+        options:[{label:'Styles',value:'Victorian · Edwardian · Lean-to'},{label:'Roof',value:'Glass · Tiled · Hybrid'},{label:'Base',value:'Brick or full-height'},{label:'Guarantee',value:'10 years'}] },
+      { id:'roofline', name:'Roofline, Fascias & Soffits', shortName:'roofline', kicker:'Exterior', img:U(SI.roofline),
+        tag:'Protect and finish your roof edge with maintenance-free uPVC.',
+        blurb:'Tired, rotten timber fascias let damp in and drag down your home\u2019s appearance. Our maintenance-free uPVC fascias, soffits, bargeboards and guttering protect the roofline and keep it looking smart for decades.',
+        features:[
+          {title:'Weather protection',body:'Seals and protects the roof edge from damp, rot and pests.'},
+          {title:'No more painting',body:'Durable uPVC simply wipes clean — no repainting, ever.'},
+          {title:'Matched finishes',body:'White, black, grey and woodgrain to match windows and doors.'},
+          {title:'Better drainage',body:'New guttering and downpipes carry water cleanly away.'}],
+        options:[{label:'Includes',value:'Fascias · Soffits · Guttering'},{label:'Colours',value:'White · Black · Woodgrain'},{label:'Material',value:'Maintenance-free uPVC'},{label:'Guarantee',value:'10 years'}] },
+    ];
+    this.STEPS = [
+      {num:'01',title:'Free consultation',body:'We talk through your goals and recommend the right product and budget — at home or over a call.'},
+      {num:'02',title:'Precise survey',body:'A technical survey captures exact measurements so every frame is made for your opening — not adjusted on site.'},
+      {num:'03',title:'Made to measure',body:'Your windows and doors are manufactured to spec with the finishes, glass and hardware you chose.'},
+      {num:'04',title:'Clean installation',body:'Our own fitters install, finish and tidy up — leaving you with a guarantee and nothing to chase.'},
+    ];
+    this.REVIEWS = [
+      {title:'Replace exterior door & fitting, 1930s terraced house', quote:'Shikhar and the team did an outstanding job of installing our uPVC door. Really reasonable price, excellent finish and communication was really good throughout. Would definitely use again.', name:'Mike', initial:'MB', place:'Buckhurst Hill', date:'Jun 2026'},
+      {title:'6x replacement glass units + window handle', quote:'Genuinely really pleased with the work. There was a slight issue with 2 of the units — they simply reordered and replaced them with zero fuss. An absolute pleasure to deal with and highly recommended!', name:'Verified customer', initial:'MH', place:'Essex', date:'May 2026'},
+      {title:'2x windows and 1x door', quote:'Shikhar and the team have done all the windows for my house and the outbuilding. Fantastic job, very good final finish. Very happy and will use them on my next project.', name:'LJ', initial:'LJ', place:'Harlow', date:'Jun 2026'},
+      {title:'Replacement windows, 4 in number', quote:'Kept up to date when the work was being carried out. Very clean and tidy, very pleased with the job and would definitely recommend this company. Job well done, thank you.', name:'Keith Willis', initial:'KW', place:'Dagenham', date:'Apr 2026'},
+      {title:'2x bay double glazed windows', quote:'Did a good job — happy with the windows.', name:'Paul', initial:'PS', place:'Shepperton', date:'Jun 2026'},
+    ];
+    this.GALLERY = [
+      {label:'Full home, aluminium throughout', art:'house'},
+      {label:'Anthracite aluminium bi-fold doors', art:'bifold'},
+      {label:'Light-filled conservatory', art:'conservatories'},
+      {label:'Minimal uPVC casement windows', art:'upvc'},
+      {label:'Orangery with roof lantern', art:'orangeries'},
+      {label:'Heritage sash restoration', art:'sash'},
+    ];
+    this.state = { screen:'home', serviceId:'upvc', lightboxIndex:null, submitted:false, heroSlide:0,
+      form:{name:'',email:'',phone:'',postcode:'',service:'',message:''}, errors:{} };
+  }
+
+  _top(){ try{ window.scrollTo({top:0,behavior:'auto'}); }catch(e){} }
+  goHome = () => this.setState({screen:'home'}, this._top);
+  goContact = () => this.setState({screen:'contact'}, this._top);
+  goService = (id) => this.setState({screen:'service', serviceId:id}, this._top);
+
+  _scrollTo(anchor){
+    requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+      const el = document.getElementById(anchor);
+      if(el){ const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top:y,behavior:'smooth'}); }
+    });});
+  }
+  goSection = (anchor) => {
+    if(this.state.screen!=='home'){ this.setState({screen:'home'}, ()=>this._scrollTo(anchor)); }
+    else { this._scrollTo(anchor); }
+  };
+  goServicesS = () => this.goSection('services-anchor');
+  goGalleryS  = () => this.goSection('gallery-anchor');
+  goReviewsS  = () => this.goSection('reviews-anchor');
+  goAboutS    = () => this.goSection('about-anchor');
+
+  openLightbox = (i) => this.setState({lightboxIndex:i});
+  closeLightbox = () => this.setState({lightboxIndex:null});
+
+
+  // ---- scroll reveal + count-up (rect-based; IntersectionObserver is unreliable in nested preview) ----
+  componentDidMount(){
+    this._onScroll = this._check.bind(this);
+    // capture phase catches scroll from ANY scrolling ancestor/container, not just window
+    window.addEventListener('scroll', this._onScroll, {passive:true, capture:true});
+    document.addEventListener('scroll', this._onScroll, {passive:true, capture:true});
+    window.addEventListener('resize', this._onScroll);
+    this._check();
+    this._startHero();
+    this._rafId = requestAnimationFrame(this._tickParallax);
+    // hero copy is above the fold — guarantee it shows quickly; full reveal-all only if the page can't scroll
+    this._timers = [setTimeout(()=>this._check(),120), setTimeout(()=>this._check(),500), setTimeout(()=>{ document.querySelectorAll('[data-hu]').forEach(el=>{ el.style.opacity='1'; el.style.transform='none'; }); },1300), setTimeout(()=>this._fallbackReveal(),2500)];
+  }
+  componentDidUpdate(){ this._check(); clearTimeout(this._safety); this._safety = setTimeout(()=>this._fallbackReveal(),2500); }
+  componentWillUnmount(){
+    window.removeEventListener('scroll', this._onScroll, true);
+    document.removeEventListener('scroll', this._onScroll, true);
+    window.removeEventListener('resize', this._onScroll);
+    if(this._poll) clearInterval(this._poll);
+    if(this._heroTimer) clearInterval(this._heroTimer);
+    if(this._rafId) cancelAnimationFrame(this._rafId);
+    (this._timers||[]).forEach(t=>clearTimeout(t));
+  }
+  _startHero(){
+    if(this._heroTimer) clearInterval(this._heroTimer);
+    this._heroTimer = setInterval(()=>{ if(this.state.screen==='home') this.setState(s=>({heroSlide:(s.heroSlide+1)%3})); }, 4800);
+  }
+  setHeroSlide = (i) => { this.setState({heroSlide:i}); this._startHero(); };
+  _startPoll(){
+    if(this._poll) return;
+    this._poll = setInterval(()=>{
+      this._check();
+      if(!document.querySelector('[data-reveal]:not([data-rev])') && !document.querySelector('[data-count]:not([data-cnt])')){
+        clearInterval(this._poll); this._poll = null;
+      }
+    }, 240);
+  }
+
+  _tickParallax = () => {
+    const nodes = document.querySelectorAll('[data-parallax]');
+    nodes.forEach(el=>{
+      const host = el.parentElement; if(!host) return;
+      const r = host.getBoundingClientRect();
+      const f = parseFloat(el.getAttribute('data-parallax')||'0');
+      el.style.transform = 'translate3d(0,'+(-r.top*f).toFixed(1)+'px,0)';
+    });
+    this._frame = (this._frame||0) + 1;
+    if(this._frame % 3 === 0) this._check();   // drive scroll-reveal from rAF so it fires exactly on scroll-in
+    this._rafId = requestAnimationFrame(this._tickParallax);
+  };
+  _check(){
+    const vh = window.innerHeight || 800;
+    document.querySelectorAll('[data-reveal]:not([data-rev])').forEach(el=>{
+      const r = el.getBoundingClientRect();
+      if(r.top < vh*0.92 && r.bottom > -40){
+        el.setAttribute('data-rev','1');
+        const d = parseInt(el.getAttribute('data-reveal-delay')||'0',10);
+        setTimeout(()=>{ el.style.opacity='1'; el.style.transform='none'; el.setAttribute('data-shown','1'); }, d);
+      }
+    });
+    document.querySelectorAll('[data-count]:not([data-cnt])').forEach(el=>{
+      const r = el.getBoundingClientRect();
+      if(r.top < vh*0.95 && r.bottom > 0){ el.setAttribute('data-cnt','1'); this._count(el); }
+    });
+  }
+
+  _revealAll(){
+    document.querySelectorAll('[data-reveal]').forEach(el=>{ el.setAttribute('data-rev','1'); el.setAttribute('data-shown','1'); el.style.opacity='1'; el.style.transform='none'; });
+    document.querySelectorAll('[data-hu]').forEach(el=>{ el.style.opacity='1'; el.style.transform='none'; });
+  }
+  _fallbackReveal(){
+    // only force everything visible when there's nothing to scroll (short page or auto-height iframe);
+    // on a scrollable page we let rAF reveal each element as it enters the viewport
+    const docH = document.documentElement.scrollHeight, vh = window.innerHeight || 800;
+    if(docH <= vh + 8) this._revealAll();
+    document.querySelectorAll('[data-hu]').forEach(el=>{ el.style.opacity='1'; el.style.transform='none'; });
+  }
+
+  _count(el){
+    const target = parseFloat(el.getAttribute('data-count'));
+    if(isNaN(target)) return;
+    const dec = parseInt(el.getAttribute('data-decimals')||'0',10);
+    const suf = el.getAttribute('data-suffix')||'';
+    const pre = el.getAttribute('data-prefix')||'';
+    const dur = 1400; const start = performance.now();
+    const fmt = (n)=>{
+      let s;
+      if(dec>0){ const parts = n.toFixed(dec).split('.'); parts[0] = parseInt(parts[0],10).toLocaleString('en-US'); s = parts.join('.'); }
+      else { s = Math.round(n).toLocaleString('en-US'); }
+      return pre+s+suf;
+    };
+    const tick = (now)=>{
+      let t = Math.min(1,(now-start)/dur);
+      const e = 1-Math.pow(1-t,3);
+      el.textContent = fmt(target*e);
+      if(t<1) requestAnimationFrame(tick); else el.textContent = fmt(target);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // product imagery sourced from real photographs
+  _art(){
+    if(this._artCache) return this._artCache;
+    const U=(id,w)=>'https://images.unsplash.com/photo-'+id+'?auto=format&fit=crop&w='+(w||1200)+'&q=80';
+    this._artCache = {
+      upvc:        U('1570129477492-45c003edd2be'),
+      aluminium:   U('1600585154340-be6161a56a0c'),
+      sash:        U('1583608205776-bfd35f0d9f83'),
+      bifold:      U('1502005097973-6a7082348e28'),
+      composite:   U('1605276374104-dee2a0ed3cd6'),
+      orangeries:  U('1600566753190-17f0baa2a6c3'),
+      conservatories:U('1600566753086-00f18fb6b3ea'),
+      roofline:    U('1572120360610-d971b9d7767c'),
+      house:       U('1600596542815-ffad4c1539a9'),
+      hHome:  U('1568605114967-8130f3a36994',1800),
+      hLiving:U('1518780664697-55e3ad937233',1800),
+      hStreet:U('1564013799919-ab600027ffc6',1800),
+      contact: U('1556745757-8d76bdb6984b',1400),
+    };
+    return this._artCache;
+  }
+
+  onField = (e) => {
+    const {name,value} = e.target;
+    this.setState(st=>({ form:{...st.form,[name]:value}, errors:{...st.errors,[name]:''} }));
+  };
+  submitForm = (e) => {
+    if(e&&e.preventDefault) e.preventDefault();
+    const f = this.state.form; const errs = {};
+    if(!f.name.trim()) errs.name = 'Please enter your name';
+    if(!f.phone.trim() || f.phone.replace(/\D/g,'').length < 7) errs.phone = 'Enter a valid phone number';
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())) errs.email = 'Enter a valid email';
+    if(!f.service) errs.service = 'Please choose a service';
+    if(Object.keys(errs).length){ this.setState({errors:errs}); return; }
+    this.setState({submitted:true, errors:{}});
+  };
+  resetForm = () => this.setState({submitted:false, form:{name:'',email:'',phone:'',postcode:'',service:'',message:''}, errors:{}});
+
+  renderVals(){
+    const accent = this.props.accentColor || '#b3804f';
+    const cols = this.props.galleryColumns || 3;
+    const art = this._art(accent);
+    const services = this.SERVICES.map((s,i)=>({ ...s, img:art[s.id], delay:(i%4)*90, go:()=>this.goService(s.id) }));
+    const selectedService = { ...(this.SERVICES.find(s=>s.id===this.state.serviceId) || this.SERVICES[0]) };
+    selectedService.img = art[selectedService.id];
+    selectedService.features = selectedService.features.map((f,i)=>({ ...f, delay:i*90 }));
+    const relatedServices = services.filter(s=>s.id!==this.state.serviceId).slice(0,4).map((s,i)=>({ ...s, img:art[s.id], delay:i*80 }));
+    const galleryItems = this.GALLERY.map((g,i)=>({ ...g, img:art[g.art], delay:(i%3)*90, onClick:()=>this.openLightbox(i) }));
+    const steps = this.STEPS.map((p,i)=>({ ...p, delay:i*120 }));
+    const reviews = this.REVIEWS.map((r,i)=>({ ...r, delay:i*110 }));
+    const li = this.state.lightboxIndex;
+    return {
+      accent,
+      img: { hero: art.house, showroom: art.house, contact: art.contact },
+      heroActive: String(this.state.heroSlide),
+      heroDots: [0,1,2].map(i=>({ i, on:()=>this.setHeroSlide(i) })),
+      heroSlides: [art.hHome, art.hLiving, art.hStreet].map((img,i)=>({ img, op:(i===this.state.heroSlide)?'1':'0', i, on:()=>this.setHeroSlide(i) })),
+      galleryCols: 'repeat(' + cols + ', minmax(0,1fr))',
+      phone: this.props.phone || '+44 7514 506192',
+      phoneHref: 'tel:' + (this.props.phone || '+44 7514 506192').replace(/[^\d+]/g,''),
+      isHome: this.state.screen==='home',
+      isService: this.state.screen==='service',
+      isContact: this.state.screen==='contact',
+      services, selectedService, relatedServices, galleryItems, steps,
+      reviews,
+      serviceNames: this.SERVICES.map(s=>s.name),
+      form: this.state.form, errors: this.state.errors,
+      submitted: this.state.submitted, notSubmitted: !this.state.submitted,
+      lightboxOpen: li!==null,
+      lightboxLabel: li!==null ? this.GALLERY[li].label : '',
+      lightboxImg: li!==null ? art[this.GALLERY[li].art] : '',
+      goHome:this.goHome, goContact:this.goContact, resetForm:this.resetForm,
+      goServicesS:this.goServicesS, goGalleryS:this.goGalleryS, goReviewsS:this.goReviewsS, goAboutS:this.goAboutS,
+      openLightbox:this.openLightbox, closeLightbox:this.closeLightbox,
+      onField:this.onField, submitForm:this.submitForm,
+    };
+  }
+}
+</script>
+</body>
+</html>
