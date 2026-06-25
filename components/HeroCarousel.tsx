@@ -39,7 +39,7 @@ export default function HeroCarousel() {
       </div>
       <div style={css("position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,17,20,0.9) 0%,rgba(16,17,20,0.66) 38%,rgba(16,17,20,0.22) 72%,rgba(16,17,20,0.04) 100%);pointer-events:none")}></div>
       <div style={css("position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,17,20,0.3) 0%,rgba(16,17,20,0) 26%,rgba(16,17,20,0.44) 100%);pointer-events:none")}></div>
-      <div style={css("position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:96px 32px;width:100%;color:#fff")}>
+      <div className="mh-wrap mh-hero-inner" style={css("position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:96px 32px;width:100%;color:#fff")}>
         <div style={css("max-width:670px")}>
           <div data-hu style={css("animation-delay:.05s;display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:0.18em;color:#e7c9a8;text-transform:uppercase;margin-bottom:26px")}>
             <span style={css("width:28px;height:1px;background:#e7c9a8")}></span>Windows · Doors · Living Spaces

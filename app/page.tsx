@@ -36,7 +36,7 @@ export default function HomePage() {
 
       {/* TRUST STRIP */}
       <section style={css("border-top:1px solid #e4dfd4;border-bottom:1px solid #e4dfd4;background:#f1eee7")}>
-        <div data-reveal style={css("max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;flex-wrap:wrap;gap:14px 48px;justify-content:space-between;align-items:center")}>
+        <div data-reveal className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;flex-wrap:wrap;gap:14px 48px;justify-content:space-between;align-items:center")}>
           {TRUST.map((t) => (
             <div key={t} style={css("display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#3a3e44")}>
               <span style={css("color:var(--accent);font-size:18px")}>●</span>{t}
@@ -46,7 +46,7 @@ export default function HomePage() {
       </section>
 
       {/* SERVICES */}
-      <section id="services-anchor" style={css("max-width:1240px;margin:0 auto;padding:96px 32px 90px")}>
+      <section id="services-anchor" className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:96px 32px 90px")}>
         <div data-reveal style={css("display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:48px")}>
           <div>
             <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px")}>What we do</div>
@@ -54,7 +54,7 @@ export default function HomePage() {
           </div>
           <p style={css("font-size:16px;color:#55595f;max-width:340px;margin:0")}>From a single replacement window to a full home transformation — every product surveyed, made and installed by our own teams.</p>
         </div>
-        <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px")}>
+        <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(290px,100%),1fr));gap:22px")}>
           {SERVICES.map((s, i) => (
             <ServiceCard key={s.id} service={s} delay={(i % 4) * 90} />
           ))}
@@ -64,7 +64,7 @@ export default function HomePage() {
       {/* ABOUT / STATS */}
       <section id="about-anchor" style={css("background:#26292e;color:#fff;position:relative;overflow:hidden")}>
         <div style={css("position:absolute;top:-120px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(179,128,79,0.22),rgba(179,128,79,0) 70%)")}></div>
-        <div style={css("max-width:1240px;margin:0 auto;padding:96px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:64px;align-items:center;position:relative")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:96px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:64px;align-items:center;position:relative")}>
           <div data-reveal>
             <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:18px")}>Why Mileshub</div>
             <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0 0 22px;line-height:1.06")}>The detail others skip is the reason we last.</h2>
@@ -94,13 +94,13 @@ export default function HomePage() {
       </section>
 
       {/* PROCESS */}
-      <section style={css("max-width:1240px;margin:0 auto;padding:96px 32px 80px")}>
+      <section className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:96px 32px 80px")}>
         <div data-reveal>
           <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;text-align:center")}>How it works</div>
           <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(28px,3.4vw,42px);letter-spacing:-0.025em;margin:0 0 54px;text-align:center;line-height:1.05")}>Four steps, no surprises.</h2>
         </div>
-        <div style={css("position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px")}>
-          <div style={css("position:absolute;top:28px;left:6%;right:6%;height:2px;background:linear-gradient(90deg,#e4dfd4,var(--accent),#e4dfd4)")}></div>
+        <div style={css("position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:32px")}>
+          <div className="mh-procline" style={css("position:absolute;top:28px;left:6%;right:6%;height:2px;background:linear-gradient(90deg,#e4dfd4,var(--accent),#e4dfd4)")}></div>
           {STEPS.map((p, i) => (
             <div key={p.num} data-reveal data-reveal-delay={i * 120} style={css("position:relative")}>
               <div style={css("width:56px;height:56px;border-radius:50%;background:#f6f4ef;border:2px solid var(--accent);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--accent);margin-bottom:22px;position:relative;z-index:1")}>{p.num}</div>
@@ -113,7 +113,7 @@ export default function HomePage() {
 
       {/* GALLERY */}
       <section id="gallery-anchor" style={css("background:#f1eee7;border-top:1px solid #e4dfd4;border-bottom:1px solid #e4dfd4")}>
-        <div style={css("max-width:1240px;margin:0 auto;padding:90px 32px")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:90px 32px")}>
           <div data-reveal style={css("display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:42px")}>
             <div>
               <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px")}>Our work</div>
@@ -121,7 +121,7 @@ export default function HomePage() {
             </div>
             <button onClick={goContact} className="btn-outline" style={css("font-size:15px;font-weight:600;padding:13px 24px")}>Start your project</button>
           </div>
-          <div style={css("display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:14px")}>
+          <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:14px")}>
             {GALLERY.map((g, i) => (
               <button key={g.label} onClick={() => setLightbox(i)} className="mh-gal mh-rimg" data-reveal data-reveal-delay={(i % 3) * 90} style={css("border:none;cursor:pointer;padding:0;aspect-ratio:1/1;border-radius:4px;position:relative;overflow:hidden")}>
                 <div className="mh-img mh-rev" role="img" aria-label={g.label} style={{ ...css("position:absolute;inset:0;background-size:cover;background-position:center"), backgroundImage: `url('${ART[g.art]}')` }}></div>
@@ -136,13 +136,13 @@ export default function HomePage() {
       </section>
 
       {/* REVIEWS */}
-      <section id="reviews-anchor" style={css("max-width:1240px;margin:0 auto;padding:96px 32px 80px")}>
+      <section id="reviews-anchor" className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:96px 32px 80px")}>
         <div data-reveal style={css("text-align:center;margin-bottom:54px")}>
           <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px")}>Reviews</div>
           <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.025em;margin:0 0 12px;line-height:1.05")}>Rated 4.8 out of 5 by our customers.</h2>
           <p style={css("font-size:16px;color:#6a6e75;margin:0")}>Based on 16 verified reviews from homeowners across the UK.</p>
         </div>
-        <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px")}>
+        <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(290px,100%),1fr));gap:24px")}>
           {REVIEWS.map((r, i) => (
             <div key={r.title} className="mh-tilt" data-reveal data-reveal-delay={i * 110} style={css("background:#fff;border:1px solid #e4dfd4;border-radius:4px;padding:32px 28px 28px;display:flex;flex-direction:column;position:relative")}>
               <span style={css("position:absolute;top:12px;right:22px;font-family:Georgia,serif;font-size:72px;line-height:1;color:#efe6d8")}>&rdquo;</span>
@@ -162,8 +162,8 @@ export default function HomePage() {
       </section>
 
       {/* FINANCE BAND */}
-      <section style={css("max-width:1240px;margin:0 auto 90px;padding:0 32px")}>
-        <div data-reveal style={css("background:var(--accent);border-radius:5px;padding:58px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;align-items:center;color:#fff;position:relative;overflow:hidden")}>
+      <section className="mh-wrap" style={css("max-width:1240px;margin:0 auto 90px;padding:0 32px")}>
+        <div data-reveal style={css("background:var(--accent);border-radius:5px;padding:58px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:32px;align-items:center;color:#fff;position:relative;overflow:hidden")}>
           <div style={css("position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,0.1)")}></div>
           <div style={css("position:relative")}>
             <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-0.02em;margin:0 0 12px;line-height:1.08")}>Spread the cost. 0% finance available.</h2>

@@ -70,3 +70,43 @@ a{color:inherit}
 .foot-link:hover{color:#fff}
 .field{width:100%;padding:12px 14px;border:1px solid #d8d2c5;border-radius:2px;font-size:15px;background:#fbfaf7;outline:none;transition:border-color .2s ease}
 .field:focus{border-color:#b3804f}
+
+/* ===================== RESPONSIVE ===================== */
+/* hamburger only shows on small screens */
+.mh-nav-toggle{display:none}
+
+@media (max-width: 860px){
+  /* collapse the header nav into a dropdown panel */
+  .mh-nav{
+    position:absolute;top:100%;left:0;right:0;
+    display:none !important;flex-direction:column;align-items:stretch;gap:0;
+    background:#f6f4ef;border-bottom:1px solid #e4dfd4;
+    padding:6px 20px 16px;box-shadow:0 18px 30px rgba(38,41,46,.12);
+  }
+  .mh-nav.mh-nav-open{display:flex !important}
+  .mh-nav .nav-link{padding:13px 2px;font-size:16px;text-align:left;border-bottom:1px solid #ece7dc}
+  .mh-nav > a{padding:13px 2px;border-bottom:1px solid #ece7dc}
+  .mh-nav .btn-accent{margin-top:12px;text-align:center;padding:14px 20px !important}
+  .mh-nav-toggle{display:inline-flex}
+}
+
+/* tighten generous side padding on phones */
+@media (max-width: 600px){
+  .mh-wrap{padding-left:20px !important;padding-right:20px !important}
+}
+@media (max-width: 380px){
+  .mh-wrap{padding-left:15px !important;padding-right:15px !important}
+}
+
+/* trim oversized hero vertical padding on small screens */
+@media (max-width: 700px){
+  .mh-hero-inner{padding-top:72px !important;padding-bottom:84px !important}
+}
+
+/* the process connector line only makes sense when the steps are in a row */
+@media (max-width: 760px){ .mh-procline{display:none !important} }
+
+/* keep the brand wordmark + hamburger fitting on very small phones
+   (!important: the base size is an inline style, which a plain class can't beat) */
+@media (max-width: 400px){ .mh-brand{font-size:16px !important} }
+@media (max-width: 340px){ .mh-brand{font-size:14px !important} }

@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main style={css("max-width:1240px;margin:0 auto;padding:64px 32px 90px")}>
+    <main className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:64px 32px 90px")}>
       <div data-reveal style={css("max-width:640px;margin-bottom:50px")}>
         <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:16px")}>Free quote</div>
         <h1 style={css("font-family:var(--font-display);font-weight:800;font-size:clamp(36px,4.6vw,56px);letter-spacing:-0.03em;line-height:1.03;margin:0 0 18px")}>Tell us about your project.</h1>
         <p style={css("font-size:18px;line-height:1.6;color:#55595f;margin:0")}>No pressure, no obligation. Share a few details and we&apos;ll arrange a free survey and itemised quote — usually within two working days.</p>
       </div>
 
-      <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:48px;align-items:start")}>
+      <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:48px;align-items:start")}>
         <ContactForm />
 
         {/* details */}

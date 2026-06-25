@@ -11,7 +11,7 @@ export default function ServiceDetail({ service }: { service: Service }) {
     <main>
       {/* breadcrumb */}
       <section style={css("border-bottom:1px solid #e4dfd4;background:#f1eee7")}>
-        <div style={css("max-width:1240px;margin:0 auto;padding:18px 32px;font-size:13px;color:#7c8088;display:flex;gap:8px;align-items:center")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:18px 32px;font-size:13px;color:#7c8088;display:flex;gap:8px;align-items:center")}>
           <button onClick={goHome} className="crumb">Home</button>
           <span>/</span>
           <button onClick={() => goSection("services-anchor")} className="crumb">Services</button>
@@ -21,7 +21,7 @@ export default function ServiceDetail({ service }: { service: Service }) {
       </section>
 
       {/* hero */}
-      <section style={css("max-width:1240px;margin:0 auto;padding:64px 32px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:60px;align-items:center")}>
+      <section className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:64px 32px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:60px;align-items:center")}>
         <div data-reveal>
           <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:18px")}>{service.kicker}</div>
           <h1 style={css("font-family:var(--font-display);font-weight:800;font-size:clamp(36px,4.6vw,58px);letter-spacing:-0.03em;line-height:1.03;margin:0 0 22px")}>{service.name}</h1>
@@ -38,9 +38,9 @@ export default function ServiceDetail({ service }: { service: Service }) {
 
       {/* features */}
       <section style={css("background:#26292e;color:#fff")}>
-        <div style={css("max-width:1240px;margin:0 auto;padding:80px 32px")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:80px 32px")}>
           <h2 data-reveal style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-0.025em;margin:0 0 44px;line-height:1.05")}>Why choose our {service.shortName}.</h2>
-          <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px")}>
+          <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:16px")}>
             {service.features.map((f, i) => (
               <div key={f.title} data-reveal data-reveal-delay={i * 90} style={css("background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:30px 28px")}>
                 <div style={css("width:42px;height:42px;border-radius:50%;background:rgba(179,128,79,0.16);color:var(--accent);display:grid;place-items:center;font-size:18px;margin-bottom:16px")}>✦</div>
@@ -53,7 +53,7 @@ export default function ServiceDetail({ service }: { service: Service }) {
       </section>
 
       {/* options */}
-      <section style={css("max-width:1240px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start")}>
+      <section className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:48px;align-items:start")}>
         <div data-reveal>
           <div style={css("font-size:12px;font-weight:600;letter-spacing:0.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px")}>Options &amp; finishes</div>
           <h3 style={css("font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.02em;margin:0 0 18px;line-height:1.1")}>Specified around your home.</h3>
@@ -71,9 +71,9 @@ export default function ServiceDetail({ service }: { service: Service }) {
 
       {/* related */}
       <section style={css("background:#f1eee7;border-top:1px solid #e4dfd4")}>
-        <div style={css("max-width:1240px;margin:0 auto;padding:72px 32px")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:72px 32px")}>
           <h3 data-reveal style={css("font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:-0.02em;margin:0 0 30px")}>Explore more services</h3>
-          <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px")}>
+          <div style={css("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px")}>
             {related.map((s, i) => (
               <button key={s.id} onClick={() => goService(s.id)} className="mh-card mh-tilt" data-reveal data-reveal-delay={i * 80} style={css("text-align:left;background:#fff;border:1px solid #e4dfd4;cursor:pointer;padding:0;display:flex;flex-direction:column;border-radius:4px;overflow:hidden")}>
                 <div className="mh-rimg" style={css("aspect-ratio:16/10;overflow:hidden")}>

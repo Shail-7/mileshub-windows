@@ -12,7 +12,7 @@ export default function Footer() {
       {/* CTA */}
       <section style={css("background:#1d2024;color:#fff;position:relative;overflow:hidden")}>
         <div style={css("position:absolute;bottom:-100px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(179,128,79,0.18),rgba(179,128,79,0) 70%)")}></div>
-        <div data-reveal style={css("max-width:1240px;margin:0 auto;padding:74px 32px;text-align:center;position:relative")}>
+        <div data-reveal className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:74px 32px;text-align:center;position:relative")}>
           <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(28px,3.6vw,46px);letter-spacing:-0.03em;margin:0 0 18px;line-height:1.05")}>Ready for a free, no-obligation quote?</h2>
           <p style={css("font-size:18px;color:#b9bcc1;margin:0 auto 32px;max-width:520px")}>Book a survey at a time that suits you. Most quotes are back within two working days.</p>
           <div style={css("display:flex;gap:14px;justify-content:center;flex-wrap:wrap")}>
@@ -24,7 +24,7 @@ export default function Footer() {
 
       {/* FOOTER */}
       <footer style={css("background:#16181b;color:#9a9ea4")}>
-        <div style={css("max-width:1240px;margin:0 auto;padding:60px 32px 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px")}>
+        <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:60px 32px 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:40px")}>
           <div style={css("grid-column:1/-1;max-width:320px")}>
             <div style={css("display:flex;align-items:center;gap:11px;margin-bottom:16px")}>
               <span style={css("width:40px;height:40px;border-radius:6px;background:#33312e;display:grid;place-items:center;overflow:hidden;flex:none")}>
@@ -63,7 +63,7 @@ export default function Footer() {
           </div>
         </div>
         <div style={css("border-top:1px solid #2a2d31")}>
-          <div style={css("max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px")}>
+          <div className="mh-wrap" style={css("max-width:1240px;margin:0 auto;padding:22px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px")}>
             <span>© 2026 Mileshub Windows Ltd. All rights reserved.</span>
             <span>Registered in England &amp; Wales</span>
           </div>
