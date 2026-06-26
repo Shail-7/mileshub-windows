@@ -23,7 +23,7 @@ const body = Hanken_Grotesk({
 export const metadata: Metadata = {
   title: "Mileshub Windows — Made-to-measure windows, doors & living spaces",
   description:
-    "Premium uPVC, aluminium and timber-style windows, doors, conservatories and orangeries — surveyed, made to measure and installed across the UK. Free no-obligation quotes.",
+    "Premium uPVC, aluminium and timber-style windows, doors and conservatories — surveyed, made to measure and installed across the UK. Free no-obligation quotes.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

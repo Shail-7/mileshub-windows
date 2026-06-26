@@ -10,7 +10,6 @@ import Lightbox from "@/components/Lightbox";
 const TRUST = [
   "Fully Insured & Guaranteed",
   "10-Year Guarantee",
-  "0% Finance Available",
   "Free No-Obligation Survey",
   "5★ Rated Installers",
 ];
@@ -85,10 +84,6 @@ export default function HomePage() {
               <div style={css("font-family:var(--font-display);font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent)")}><span data-count="150" data-suffix="+">150+</span></div>
               <div style={css("font-size:14px;color:#b9bcc1;margin-top:6px")}>Installations completed</div>
             </div>
-            <div style={css("background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:28px 24px")}>
-              <div style={css("font-family:var(--font-display);font-size:40px;font-weight:700;letter-spacing:-0.03em;color:var(--accent)")}><span data-count="0" data-suffix="%">0%</span></div>
-              <div style={css("font-size:14px;color:#b9bcc1;margin-top:6px")}>Finance options available</div>
-            </div>
           </div>
         </div>
       </section>
@@ -158,20 +153,6 @@ export default function HomePage() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* FINANCE BAND */}
-      <section className="mh-wrap" style={css("max-width:1240px;margin:0 auto 90px;padding:0 32px")}>
-        <div data-reveal style={css("background:var(--accent);border-radius:5px;padding:58px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:32px;align-items:center;color:#fff;position:relative;overflow:hidden")}>
-          <div style={css("position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,0.1)")}></div>
-          <div style={css("position:relative")}>
-            <h2 style={css("font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-0.02em;margin:0 0 12px;line-height:1.08")}>Spread the cost. 0% finance available.</h2>
-            <p style={css("font-size:17px;line-height:1.55;color:rgba(255,255,255,0.92);margin:0;max-width:480px")}>Flexible payment plans on installations — get the windows you want now and pay over time, subject to status.</p>
-          </div>
-          <div style={css("display:flex;justify-content:flex-end;position:relative")}>
-            <button onClick={goContact} className="btn-dark" style={css("font-size:16px;font-weight:600;padding:16px 30px")}>Get a free quote</button>
-          </div>
         </div>
       </section>
 

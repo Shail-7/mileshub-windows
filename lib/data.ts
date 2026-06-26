@@ -42,9 +42,7 @@ export type ArtKey =
   | "sash"
   | "bifold"
   | "composite"
-  | "orangeries"
   | "conservatories"
-  | "roofline"
   | "house"
   | "hHome"
   | "hLiving"
@@ -71,9 +69,7 @@ export const ART: Record<ArtKey, string> = {
   sash: U("1583608205776-bfd35f0d9f83"),
   bifold: U("1502005097973-6a7082348e28"),
   composite: U("1605276374104-dee2a0ed3cd6"),
-  orangeries: U("1600566753190-17f0baa2a6c3"),
   conservatories: U("1600566753086-00f18fb6b3ea"),
-  roofline: U("1572120360610-d971b9d7767c"),
   house: U("1600596542815-ffad4c1539a9"),
   hHome: U("1568605114967-8130f3a36994", 1800),
   hLiving: U("1518780664697-55e3ad937233", 1800),
@@ -171,23 +167,6 @@ export const SERVICES: Service[] = [
     ],
   },
   {
-    id: "orangeries", name: "Orangeries", shortName: "orangeries", kicker: "Living spaces", img: ART.orangeries,
-    tag: "A luxurious, light-filled room that adds real value and year-round comfort.",
-    blurb: "A refined alternative to a conservatory — solid pillars and a flat perimeter roof with a glazed lantern create a substantial, naturally lit room that feels like a true extension of your home.",
-    features: [
-      { title: "Year-round comfort", body: "Insulated walls and roof keep the space usable in every season." },
-      { title: "Roof lantern", body: "A central glazed lantern floods the room with natural daylight." },
-      { title: "Adds value", body: "A high-quality living space that enhances how you use your home." },
-      { title: "Tailored design", body: "Designed around your home’s style, brickwork and proportions." },
-    ],
-    options: [
-      { label: "Roof", value: "Lantern or flat" },
-      { label: "Base", value: "Brick pillars" },
-      { label: "Glazing", value: "Solar-control glass" },
-      { label: "Guarantee", value: "10 years" },
-    ],
-  },
-  {
     id: "conservatories", name: "Conservatories", shortName: "conservatories", kicker: "Living spaces", img: ART.conservatories,
     tag: "Extra living space, beautifully glazed and made to be used all year.",
     blurb: "From classic Victorian to lean-to and gable styles, a modern conservatory gives you the extra room you need. Advanced glazing and insulated roof options keep it comfortable through summer and winter.",
@@ -201,23 +180,6 @@ export const SERVICES: Service[] = [
       { label: "Styles", value: "Victorian · Edwardian · Lean-to" },
       { label: "Roof", value: "Glass · Tiled · Hybrid" },
       { label: "Base", value: "Brick or full-height" },
-      { label: "Guarantee", value: "10 years" },
-    ],
-  },
-  {
-    id: "roofline", name: "Roofline, Fascias & Soffits", shortName: "roofline", kicker: "Exterior", img: ART.roofline,
-    tag: "Protect and finish your roof edge with maintenance-free uPVC.",
-    blurb: "Tired, rotten timber fascias let damp in and drag down your home’s appearance. Our maintenance-free uPVC fascias, soffits, bargeboards and guttering protect the roofline and keep it looking smart for decades.",
-    features: [
-      { title: "Weather protection", body: "Seals and protects the roof edge from damp, rot and pests." },
-      { title: "No more painting", body: "Durable uPVC simply wipes clean — no repainting, ever." },
-      { title: "Matched finishes", body: "White, black, grey and woodgrain to match windows and doors." },
-      { title: "Better drainage", body: "New guttering and downpipes carry water cleanly away." },
-    ],
-    options: [
-      { label: "Includes", value: "Fascias · Soffits · Guttering" },
-      { label: "Colours", value: "White · Black · Woodgrain" },
-      { label: "Material", value: "Maintenance-free uPVC" },
       { label: "Guarantee", value: "10 years" },
     ],
   },
@@ -243,7 +205,6 @@ export const GALLERY: GalleryItem[] = [
   { label: "Anthracite aluminium bi-fold doors", art: "bifold" },
   { label: "Light-filled conservatory", art: "conservatories" },
   { label: "Minimal uPVC casement windows", art: "upvc" },
-  { label: "Orangery with roof lantern", art: "orangeries" },
   { label: "Heritage sash restoration", art: "sash" },
 ];
 
